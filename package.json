@@ -1,0 +1,10 @@
+{
+  "name": "vslserver",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Christian Scheuer <info@creatix.dk>",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^6.1.2"
+  }
+}
