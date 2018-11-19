@@ -71,7 +71,7 @@ function viennaConnection() {
         for (let x = 0; x < w; x++)
             for (let y = 0; y < h; y++) {
                 let key = x + ',' + y;
-                newMatrixInfo[key] = matrixInfo[key];
+                newMatrixInfo[key] = matrixInfo[key] || '';
             }
         matrixInfo = newMatrixInfo;
         matrixSize = { w, h };
@@ -85,7 +85,7 @@ function viennaConnection() {
             const isBlank = flags === 8;
             const cellText = texts[textIndex];
 
-            matrixInfo[x + ',' + y] = cellText;
+            matrixInfo[x + ',' + y] = cellText || '';
         }
         updateSoundFlow();
     }
