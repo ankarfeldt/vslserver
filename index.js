@@ -52,6 +52,7 @@ function viennaConnection() {
         handlers.resizeMatrix = resizeMatrix;
         handlers.selectCellXY = selectCellXY;
 
+        console.log('Listening for Vienna Instruments Pro instances...');
         connect();
     }
 
@@ -66,9 +67,17 @@ function viennaConnection() {
         });
 
         ws.on('error', function(err) {
-            console.log('Der skete en fejl i websocket: ' + err, err);
+            if ((err + '').indexOf('ECONNREFUSED') < 0) {
+                //Only show error if it wasn't a simple ECONNREFUSED
+                console.log('Der skete en fejl i websocket: ' + err, err);
+            }            
+            setTimeout(() => retry(), 1000);
             return true;
         });
+    }
+
+    function retry() {
+        connect();
     }
 
     function onInit() {
@@ -98,7 +107,7 @@ function viennaConnection() {
                     //console.log(msg, args);
                     handler(args);
                 } else {
-                    console.log('Unsupported handler for msg: ' + msg);
+                    //console.log('Unsupported handler for msg: ' + msg);
                 }
             }
         } catch (e) {
