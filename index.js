@@ -41,6 +41,7 @@ function viennaConnection() {
     function init() {
         handlers.updateCellNames = updateCellNames;
         handlers.resizeMatrix = resizeMatrix;
+        handlers.selectCellXY = selectCellXY;
 
         connect();
     }
@@ -88,7 +89,7 @@ function viennaConnection() {
                     //console.log(msg, args);
                     handler(args);
                 } else {
-                    //console.log('Unsupported handler for msg: ' + msg);
+                    console.log('Unsupported handler for msg: ' + msg);
                 }
             }
         } catch (e) {
@@ -113,6 +114,16 @@ function viennaConnection() {
         updateSoundFlow();
     }
 
+    function selectCellXY([x, y]) {
+        reportSelectAsync(x, y).catch(handleError);
+    }
+
+    async function reportSelectAsync(x, y) {
+        await sendToSoundFlow({
+            selectedCell: { x, y },
+        });
+    }
+
     const updateSoundFlow = debounce(
         () => updateSoundFlowAsync().catch(handleError),
         50,
@@ -130,10 +141,13 @@ function viennaConnection() {
     }
 
     async function updateSoundFlowAsync() {
-        const data = {
+        await sendToSoundFlow({
             buttonNames: getMatrixRepresentation(),
             matrixSize: matrixSize,
-        };
+        });
+    }
+
+    async function sendToSoundFlow(data) {
         console.log(data);
         const fetchRes = await fetch(sfCommandWebTrigger, {
             method: 'POST',
