@@ -85,7 +85,7 @@ function viennaConnection() {
 
                 var handler = handlers[msg];
                 if (handler) {
-                    console.log(msg, args);
+                    //console.log(msg, args);
                     handler(args);
                 } else {
                     //console.log('Unsupported handler for msg: ' + msg);
