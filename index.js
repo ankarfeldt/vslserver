@@ -4,6 +4,32 @@ const sfCommandWebTrigger =
 const WebSocket = require('ws');
 const fetch = require('node-fetch');
 
+function debounce(func, wait, immediate) {
+    var timeout = void 0;
+
+    return function doDebounce() {
+        var context = this;
+        var args = arguments;
+
+        var later = function later() {
+            timeout = null;
+            if (!immediate) {
+                func.apply(context, args);
+            }
+        };
+
+        var callNow = immediate && !timeout;
+
+        clearTimeout(timeout);
+
+        timeout = setTimeout(later, wait);
+
+        if (callNow) {
+            func.apply(context, args);
+        }
+    };
+}
+
 function viennaConnection() {
     var ws,
         handlers = {},
@@ -40,6 +66,10 @@ function viennaConnection() {
         ws.send('INIT');
     }
 
+    function handleError(err) {
+        console.log('ERROR: ' + err, err);
+    }
+
     function receiveMessage(data) {
         var s = data;
         var i = s.indexOf(':::');
@@ -52,10 +82,10 @@ function viennaConnection() {
                 if (!line.trim()) continue;
                 var [msg, argsF] = line.split('(');
                 var args = JSON.parse('[' + argsF.slice(0, -2) + ']');
-                //console.log(msg, args);
 
                 var handler = handlers[msg];
                 if (handler) {
+                    console.log(msg, args);
                     handler(args);
                 } else {
                     //console.log('Unsupported handler for msg: ' + msg);
@@ -67,13 +97,6 @@ function viennaConnection() {
     }
 
     function resizeMatrix([w, h]) {
-        let newMatrixInfo = {};
-        for (let x = 0; x < w; x++)
-            for (let y = 0; y < h; y++) {
-                let key = x + ',' + y;
-                newMatrixInfo[key] = matrixInfo[key] || '';
-            }
-        matrixInfo = newMatrixInfo;
         matrixSize = { w, h };
         updateSoundFlow();
     }
@@ -90,9 +113,25 @@ function viennaConnection() {
         updateSoundFlow();
     }
 
-    async function updateSoundFlow() {
+    const updateSoundFlow = debounce(
+        () => updateSoundFlowAsync().catch(handleError),
+        50,
+    );
+
+    function getMatrixRepresentation() {
+        let newMatrixInfo = {};
+        let { w, h } = matrixSize;
+        for (let x = 0; x < w; x++)
+            for (let y = 0; y < h; y++) {
+                let key = x + ',' + y;
+                newMatrixInfo[key] = matrixInfo[key] || '';
+            }
+        return newMatrixInfo;
+    }
+
+    async function updateSoundFlowAsync() {
         const data = {
-            buttonNames: matrixInfo,
+            buttonNames: getMatrixRepresentation(),
             matrixSize: matrixSize,
         };
         console.log(data);
