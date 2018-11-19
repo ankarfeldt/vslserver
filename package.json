@@ -5,6 +5,7 @@
   "author": "Christian Scheuer <info@creatix.dk>",
   "license": "MIT",
   "dependencies": {
+    "node-fetch": "^2.3.0",
     "ws": "^6.1.2"
   }
 }
