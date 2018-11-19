@@ -1,4 +1,5 @@
-const sfCommandWebTrigger = 'http://localhost:1780/command/user:-LHKT0KnmQXS1klOAnVV:cjonco4fh0000xq10iurt08a5';
+const sfCommandWebTrigger =
+    'http://localhost:1780/command/user:cjol1m8090000fx10cirjhcel:cjonk6xpp0000z010q1ijb59b';
 
 const WebSocket = require('ws');
 const fetch = require('node-fetch');
@@ -6,12 +7,14 @@ const fetch = require('node-fetch');
 function viennaConnection() {
     var ws,
         handlers = {},
-        matrixInfo = {};
+        matrixInfo = {},
+        matrixSize = { w: 0, h: 0 };
 
     init();
 
     function init() {
         handlers.updateCellNames = updateCellNames;
+        handlers.resizeMatrix = resizeMatrix;
 
         connect();
     }
@@ -63,9 +66,20 @@ function viennaConnection() {
         }
     }
 
+    function resizeMatrix([w, h]) {
+        let newMatrixInfo = {};
+        for (let x = 0; x < w; x++)
+            for (let y = 0; y < h; y++) {
+                let key = x + ',' + y;
+                newMatrixInfo[key] = matrixInfo[key];
+            }
+        matrixInfo = newMatrixInfo;
+        matrixSize = { w, h };
+        updateSoundFlow();
+    }
+
     function updateCellNames([texts, changedRecords]) {
         //console.log('New cell names: ', { texts, changedRecords });
-
         for (let record of changedRecords) {
             const [x, y, textIndex, flags] = record;
             const isBlank = flags === 8;
@@ -73,22 +87,22 @@ function viennaConnection() {
 
             matrixInfo[x + ',' + y] = cellText;
         }
-
-        console.log(JSON.stringify(matrixInfo, null, 4));
         updateSoundFlow();
     }
 
     async function updateSoundFlow() {
-        const fetchRes = await fetch(
-            sfCommandWebTrigger,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ buttonNames: matrixInfo }),
+        const data = {
+            buttonNames: matrixInfo,
+            matrixSize: matrixSize,
+        };
+        console.log(data);
+        const fetchRes = await fetch(sfCommandWebTrigger, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
             },
-        );
+            body: JSON.stringify(data),
+        });
         const response = await fetchRes.json();
         console.log('Response from SF: ', response);
     }
