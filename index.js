@@ -37,6 +37,15 @@ function viennaConnection() {
         matrixSize = { w: 0, h: 0 };
 
     init();
+    //testSFConnection().catch(handleError);
+
+    async function testSFConnection() {
+        var data = {};
+        for (var i = 0; i < 10000; i++) {
+            data[i] = 'hejsa med digsa';
+        }
+        await sendToSoundFlow({ data });
+    }
 
     function init() {
         handlers.updateCellNames = updateCellNames;
