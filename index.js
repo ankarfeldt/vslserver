@@ -1,5 +1,6 @@
 const sfCommandId = 'cjonk6xpp0000z010q1ijb59b';
 
+const fs = require('fs');
 const WebSocket = require('ws');
 const fetch = require('node-fetch');
 
@@ -184,6 +185,6 @@ function viennaConnection({ packageId }) {
 }
 
 (function() {
-    var packageId = process.argv[2];
+    var packageId = fs.readFileSync(__dirname + '/packageId.txt', 'utf8').toString().trim();
     viennaConnection({ packageId });
 })();
