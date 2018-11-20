@@ -170,7 +170,7 @@ function viennaConnection({ packageId }) {
     async function sendToSoundFlow(data) {
         console.log(data);
         const fetchRes = await fetch(
-            'http://localhost:1780/' + packageId + ':' + sfCommandId,
+            'http://localhost:1780/command/' + packageId + ':' + sfCommandId,
             {
                 method: 'POST',
                 headers: {
