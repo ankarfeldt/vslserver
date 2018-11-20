@@ -1,5 +1,4 @@
-const sfCommandWebTrigger =
-    'http://localhost:1780/command/user:cjol1m8090000fx10cirjhcel:cjonk6xpp0000z010q1ijb59b';
+const sfCommandId = 'cjonk6xpp0000z010q1ijb59b';
 
 const WebSocket = require('ws');
 const fetch = require('node-fetch');
@@ -30,7 +29,7 @@ function debounce(func, wait, immediate) {
     };
 }
 
-function viennaConnection() {
+function viennaConnection({ packageId }) {
     var ws,
         handlers = {},
         matrixInfo = {},
@@ -52,6 +51,8 @@ function viennaConnection() {
         handlers.resizeMatrix = resizeMatrix;
         handlers.selectCellXY = selectCellXY;
 
+        console.log('Package Id: ' + packageId);
+
         console.log('Listening for Vienna Instruments Pro instances...');
         connect();
     }
@@ -70,7 +71,7 @@ function viennaConnection() {
             if ((err + '').indexOf('ECONNREFUSED') < 0) {
                 //Only show error if it wasn't a simple ECONNREFUSED
                 console.log('Der skete en fejl i websocket: ' + err, err);
-            }            
+            }
             setTimeout(() => retry(), 1000);
             return true;
         });
@@ -167,16 +168,22 @@ function viennaConnection() {
 
     async function sendToSoundFlow(data) {
         console.log(data);
-        const fetchRes = await fetch(sfCommandWebTrigger, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
+        const fetchRes = await fetch(
+            'http://localhost:1780/' + packageId + ':' + sfCommandId,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
             },
-            body: JSON.stringify(data),
-        });
+        );
         const response = await fetchRes.json();
         console.log('Response from SF: ', response);
     }
 }
 
-viennaConnection();
+(function() {
+    var packageId = process.argv[2];
+    viennaConnection({ packageId });
+})();
