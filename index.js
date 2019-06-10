@@ -1,5 +1,6 @@
 const sfCommandId = 'cjonk6xpp0000z010q1ijb59b';
 
+
 const fs = require('fs');
 const WebSocket = require('ws');
 const fetch = require('node-fetch');
@@ -34,6 +35,7 @@ function viennaConnection({ packageId }) {
     var ws,
         handlers = {},
         matrixInfo = {},
+        matrixRow = { idx: '', title: '' },
         matrixSize = { w: 0, h: 0 };
 
     init();
@@ -50,6 +52,7 @@ function viennaConnection({ packageId }) {
     function init() {
         handlers.updateCellNames = updateCellNames;
         handlers.resizeMatrix = resizeMatrix;
+        handlers.setMatrixTitle = setMatrixTitle;
         handlers.selectCellXY = selectCellXY;
 
         console.log('Package Id: ' + packageId);
@@ -122,6 +125,11 @@ function viennaConnection({ packageId }) {
         updateSoundFlow();
     }
 
+    function setMatrixTitle([idx,title]){
+        matrixRow = { idx, title };
+        updateSoundFlow();
+    }
+
     function updateCellNames([texts, changedRecords]) {
         //console.log('New cell names: ', { texts, changedRecords });
         for (let record of changedRecords) {
@@ -164,6 +172,7 @@ function viennaConnection({ packageId }) {
         await sendToSoundFlow({
             buttonNames: getMatrixRepresentation(),
             matrixSize: matrixSize,
+            matrixRow: matrixRow,
         });
     }
 
