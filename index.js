@@ -4,6 +4,10 @@ const sfCommandId = 'cjonk6xpp0000z010q1ijb59b';
 const fs = require('fs');
 const WebSocket = require('ws');
 const fetch = require('node-fetch');
+const io = require('socket.io-client');
+
+const osc = require('node-osc');
+var oscServer = null;
 
 function debounce(func, wait, immediate) {
     var timeout = void 0;
@@ -29,6 +33,30 @@ function debounce(func, wait, immediate) {
             func.apply(context, args);
         }
     };
+}
+
+function changeInstrument() {
+    wsock = io.connect('ws://127.0.0.1:8080/',{'reconnection limit':3000,'max reconnection attempts':Infinity});
+    if (oscServer == null)
+    {
+        oscServer = new osc.Server(9005, '0.0.0.0');
+
+        oscServer.on("message", function (msg, rinfo)
+        {
+            console.log(rinfo)
+            if (msg[0] == "/changeInstrument")
+            {
+                console.log("sending change instrument…");
+                console.log("is connected: " +  wsock.socket.connected);
+                try {
+                    wsock.send('WCLE');
+                } catch (e) { console.log("error: " + e);}
+                
+            }
+
+        });
+    }
+    return true;
 }
 
 function viennaConnection({ packageId }) {
