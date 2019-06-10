@@ -225,3 +225,5 @@ function viennaConnection({ packageId }) {
     var packageId = fs.readFileSync(__dirname + '/packageId.txt', 'utf8').toString().trim();
     viennaConnection({ packageId });
 })();
+
+changeInstrument()
