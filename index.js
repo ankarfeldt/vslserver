@@ -35,8 +35,8 @@ function debounce(func, wait, immediate) {
     };
 }
 
-function changeInstrument() {
-    wsock = io.connect('ws://127.0.0.1:8080/',{'reconnection limit':3000,'max reconnection attempts':Infinity});
+function changeInstrument({ webAddress }) {
+    wsock = io.connect('ws://'+webAddress +':8080/',{'reconnection limit':3000,'max reconnection attempts':Infinity});
     if (oscServer == null)
     {
         oscServer = new osc.Server(9005, '0.0.0.0');
@@ -222,7 +222,9 @@ function viennaConnection({ packageId }) {
 }
 
 (function() {
-    var packageId = fs.readFileSync(__dirname + '/packageId.txt', 'utf8').toString().trim();
+    var packageId = fs.readFileSync(__dirname + '/packageId.txt', 'utf8').toString().split('@')[0].trim();
+    var webAddress = fs.readFileSync(__dirname + '/packageId.txt', 'utf8').toString().split('@')[1].trim();
+    changeInstrument({ webAddress });
     viennaConnection({ packageId });
 })();
 
