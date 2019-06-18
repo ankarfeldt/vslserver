@@ -36,7 +36,7 @@ function debounce(func, wait, immediate) {
 }
 
 function changeInstrument(webAddress) {
-    wsock = io.connect('ws://'+webAddress +':8080/',{'reconnection limit':3000,'max reconnection attempts':Infinity});
+    wsock = io.connect('ws://'+webAddress +'/',{'reconnection limit':3000,'max reconnection attempts':Infinity});
     if (oscServer == null)
     {
         oscServer = new osc.Server(9005, '0.0.0.0');
@@ -90,7 +90,7 @@ function viennaConnection({ packageId }) {
     }
 
     function connect() {
-        ws = new WebSocket('ws://127.0.0.1:8080/');
+        ws = new WebSocket('ws://'+webAddress +'/');
 
         ws.on('open', onInit);
 
@@ -193,6 +193,7 @@ function viennaConnection({ packageId }) {
                 let key = x + ',' + y;
                 newMatrixInfo[key] = matrixInfo[key] || '';
             }
+           // console.log(newMatrixInfo)
         return newMatrixInfo;
     }
 
