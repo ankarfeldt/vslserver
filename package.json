@@ -8,6 +8,5 @@
     "node-fetch": "^2.3.0",
     "ws": "^6.1.2",
     "socket.io-client": "0.9.6",
-    "node-osc": "0.3.0"
   }
 }
