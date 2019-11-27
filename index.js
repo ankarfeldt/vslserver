@@ -222,10 +222,11 @@ function viennaConnection({ packageId }) {
     }
 }
 
+var webAddress = fs.readFileSync(__dirname + '/webAddress.txt', 'utf8').toString().trim();
+
 (function() {
     var packageId = fs.readFileSync(__dirname + '/packageId.txt', 'utf8').toString().trim();
     viennaConnection({ packageId });
 })();
 
-var webAddress = fs.readFileSync(__dirname + '/webAddress.txt', 'utf8').toString().trim();
 changeInstrument(webAddress)
