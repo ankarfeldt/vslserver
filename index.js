@@ -74,8 +74,7 @@ function viennaConnection({ packageId }) {
         sliderEnabled = {},
         sliderTitle = {},
         sliderValue = {},
-        seqTitle = {},
-        cellNames = {};
+        seqTitle = {};
 
     init();
     //testSFConnection().catch(handleError);
@@ -280,7 +279,6 @@ function viennaConnection({ packageId }) {
             sliderTitle: sliderTitle,
             sliderValue: sliderValue,
             seqTitle: seqTitle,
-            cellNames: cellNames,
         });
     }
 
