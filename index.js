@@ -62,9 +62,20 @@ function changeInstrument(webAddress) {
 function viennaConnection({ packageId }) {
     var ws,
         handlers = {},
-        matrixInfo = {},
-        matrixRow = { idx: '', title: '' },
-        matrixSize = { w: 0, h: 0 };
+        selectedRow = {},
+        enableSeq = {},
+        matrixSize = { w: 0, h: 0 },
+        selectAB = {},
+        resizeRows = {},
+        matrixRow = {},//{ idx: '', title: '' },
+        matrixInfo = {}, // update cell name
+        selectedCell = {},
+        slotData = {},
+        sliderEnabled = {},
+        sliderTitle = {},
+        sliderValue = {},
+        seqTitle = {},
+        cellNames = {};
 
     init();
     //testSFConnection().catch(handleError);
@@ -78,10 +89,19 @@ function viennaConnection({ packageId }) {
     }
 
     function init() {
-        handlers.updateCellNames = updateCellNames;
+        handlers.selectRow = selectRow;
+        handlers.setEnableSeq = setEnableSeq;
         handlers.resizeMatrix = resizeMatrix;
-        handlers.setMatrixTitle = setMatrixTitle;
         handlers.selectCellXY = selectCellXY;
+        handlers.setSelectAB = setSelectAB;
+        handlers.setResizeRows = setResizeRows;
+        handlers.setMatrixTitle = setMatrixTitle;
+        handlers.setSlotData = setSlotData;
+        handlers.setSliderEnabled = setSliderEnabled;
+        handlers.setSliderTitle = setSliderTitle;
+        handlers.setSliderValue = setSliderValue;
+        handlers.setSeqTitle = setSeqTitle;
+        handlers.updateCellNames = updateCellNames;
 
         console.log('Package Id: ' + packageId);
 
@@ -132,6 +152,7 @@ function viennaConnection({ packageId }) {
         try {
             for (let line of s.split('\n')) {
                 if (!line.trim()) continue;
+                console.log(s)
                 var [msg, argsF] = line.split('(');
                 var args = JSON.parse('[' + argsF.slice(0, -2) + ']');
 
@@ -154,7 +175,7 @@ function viennaConnection({ packageId }) {
     }
 
     function setMatrixTitle([idx,title]){
-        matrixRow = { idx, title };
+        matrixRow[idx] = { title };
         updateSoundFlow();
     }
 
@@ -180,6 +201,54 @@ function viennaConnection({ packageId }) {
         });
     }
 
+// JESPER NEW STUFF
+    function setSlotData([data]){
+        slotData = { data };
+        updateSoundFlow();
+    }
+    
+    function setEnableSeq([idx]){
+        enableSeq = { idx };
+        updateSoundFlow();
+    }
+
+    function setSelectAB([idx]){
+        selectAB = { idx };
+        updateSoundFlow();
+    }
+
+    function selectRow([idx]){
+        selectedRow = { idx };
+        updateSoundFlow();
+    }
+
+    function setResizeRows([idx]){
+        resizeRows = { idx };
+        updateSoundFlow();
+    }
+
+
+    function setSliderEnabled([idx, title]){
+        sliderEnabled[idx] = { title };
+        updateSoundFlow();
+    }
+
+    function setSliderTitle([idx, title]){
+        sliderTitle[idx] = { title };
+        updateSoundFlow();
+    }
+
+    function setSliderValue([idx, title]){
+        sliderValue[idx] = { title };
+        updateSoundFlow();
+    }
+
+    function setSeqTitle([idx, title]){
+        seqTitle[idx] = { title };
+        updateSoundFlow();
+    }
+
+// NEW STUFF ENDING
     const updateSoundFlow = debounce(
         () => updateSoundFlowAsync().catch(handleError),
         50,
@@ -199,14 +268,25 @@ function viennaConnection({ packageId }) {
 
     async function updateSoundFlowAsync() {
         await sendToSoundFlow({
-            buttonNames: getMatrixRepresentation(),
+            buttonNames: getMatrixRepresentation(), // update Names
+            selectedRow: selectedRow,
+            enableSeq: enableSeq,
             matrixSize: matrixSize,
+            selectedCell: selectedCell,
+            selectAB: selectAB,
+            resizeRows: resizeRows,
             matrixRow: matrixRow,
+            slotData: slotData,
+            sliderEnabled: sliderEnabled,
+            sliderTitle: sliderTitle,
+            sliderValue: sliderValue,
+            seqTitle: seqTitle,
+            cellNames: cellNames,
         });
     }
 
     async function sendToSoundFlow(data) {
-        console.log(data);
+       // console.log(data);
         const fetchRes = await fetch(
             'http://localhost:1780/command/' + packageId + ':' + sfCommandId,
             {
@@ -218,7 +298,7 @@ function viennaConnection({ packageId }) {
             },
         );
         const response = await fetchRes.json();
-        console.log('Response from SF: ', response);
+       // console.log('Response from SF: ', response);
     }
 }
 
