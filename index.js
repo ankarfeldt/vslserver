@@ -62,15 +62,15 @@ function changeInstrument(webAddress) {
 function viennaConnection({ packageId }) {
     var ws,
         handlers = {},
-        selectedRow = {},
-        enableSeq = {},
+        selectedRow = 0,
+        enableSeq = 0,
         matrixSize = { w: 0, h: 0 },
-        selectAB = {},
-        resizeRows = {},
-        matrixRow = {},//{ idx: '', title: '' },
+        selectedAB = 0,
+        resizeRows = 0,
+        matrixRow = {},// { idx: '', title: '' },
         matrixInfo = {}, // update cell name
-        selectedCell = {},
-        slotData = {},
+        //selectedCell = {},
+        slotData = '',
         sliderEnabled = {},
         sliderTitle = {},
         sliderValue = {},
@@ -93,7 +93,7 @@ function viennaConnection({ packageId }) {
         handlers.setEnableSeq = setEnableSeq;
         handlers.resizeMatrix = resizeMatrix;
         handlers.selectCellXY = selectCellXY;
-        handlers.setSelectAB = setSelectAB;
+        handlers.selectAB = selectAB;
         handlers.setResizeRows = setResizeRows;
         handlers.setMatrixTitle = setMatrixTitle;
         handlers.setSlotData = setSlotData;
@@ -148,11 +148,10 @@ function viennaConnection({ packageId }) {
         if (i >= 0) s = s.substring(i + 3);
         i = s.indexOf('::');
         if (i >= 0) s = s.substring(i + 2);
-
         try {
             for (let line of s.split('\n')) {
                 if (!line.trim()) continue;
-                console.log(s)
+                // console.log(s) // Logs all signals. Great for adding more function
                 var [msg, argsF] = line.split('(');
                 var args = JSON.parse('[' + argsF.slice(0, -2) + ']');
 
@@ -203,48 +202,48 @@ function viennaConnection({ packageId }) {
 
 // JESPER NEW STUFF
     function setSlotData([data]){
-        slotData = { data };
+        slotData = data;
         updateSoundFlow();
     }
     
     function setEnableSeq([idx]){
-        enableSeq = { idx };
+        enableSeq = idx;
         updateSoundFlow();
     }
 
-    function setSelectAB([idx]){
-        selectAB = { idx };
+    function selectAB([idx]){
+        selectedAB = idx;
         updateSoundFlow();
     }
 
     function selectRow([idx]){
-        selectedRow = { idx };
+        selectedRow = idx;
         updateSoundFlow();
     }
 
     function setResizeRows([idx]){
-        resizeRows = { idx };
+        resizeRows = idx;
         updateSoundFlow();
     }
 
 
     function setSliderEnabled([idx, title]){
-        sliderEnabled[idx] = { title };
+        sliderEnabled[idx] = title;
         updateSoundFlow();
     }
 
     function setSliderTitle([idx, title]){
-        sliderTitle[idx] = { title };
+        sliderTitle[idx] = title;
         updateSoundFlow();
     }
 
     function setSliderValue([idx, title]){
-        sliderValue[idx] = { title };
+        sliderValue[idx] = title;
         updateSoundFlow();
     }
 
     function setSeqTitle([idx, title]){
-        seqTitle[idx] = { title };
+        seqTitle[idx] = title;
         updateSoundFlow();
     }
 
@@ -272,8 +271,8 @@ function viennaConnection({ packageId }) {
             selectedRow: selectedRow,
             enableSeq: enableSeq,
             matrixSize: matrixSize,
-            selectedCell: selectedCell,
-            selectAB: selectAB,
+            //selectedCell: selectedCell,
+            selectedAB: selectedAB,
             resizeRows: resizeRows,
             matrixRow: matrixRow,
             slotData: slotData,
