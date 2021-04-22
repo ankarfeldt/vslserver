@@ -1,4 +1,4 @@
-const sfCommandId = 'cjonk6xpp0000z010q1ijb59b';
+const sfCommandId = 'cknsud2tu000aso10mth31dlg';
 
 
 const fs = require('fs');
