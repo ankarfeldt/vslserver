@@ -173,7 +173,7 @@ function viennaConnection({ packageId }) {
     }
 
     function setMatrixTitle([idx,title]){
-        matrixRow[idx] = { title };
+        matrixRow[idx] = title;
         updateSoundFlow();
     }
 
