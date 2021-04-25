@@ -66,7 +66,7 @@ function viennaConnection({ packageId }) {
         enableSeq = 0,
         matrixSize = { w: 0, h: 0 },
         selectedAB = 0,
-        resizeRows = 0,
+        resizedRows = 0,
         matrixRow = {},// { idx: '', title: '' },
         matrixInfo = {}, // update cell name
         //selectedCell = {},
@@ -93,7 +93,7 @@ function viennaConnection({ packageId }) {
         handlers.resizeMatrix = resizeMatrix;
         handlers.selectCellXY = selectCellXY;
         handlers.selectAB = selectAB;
-        handlers.setResizeRows = setResizeRows;
+        handlers.resizeRows = resizeRows;
         handlers.setMatrixTitle = setMatrixTitle;
         handlers.setSlotData = setSlotData;
         handlers.setSliderEnabled = setSliderEnabled;
@@ -220,8 +220,8 @@ function viennaConnection({ packageId }) {
         updateSoundFlow();
     }
 
-    function setResizeRows([idx]){
-        resizeRows = idx;
+    function resizeRows([h]){
+        resizedRows = h;
         updateSoundFlow();
     }
 
@@ -272,7 +272,7 @@ function viennaConnection({ packageId }) {
             matrixSize: matrixSize,
             //selectedCell: selectedCell,
             selectedAB: selectedAB,
-            resizeRows: resizeRows,
+            resizedRows: resizedRows,
             matrixRow: matrixRow,
             slotData: slotData,
             sliderEnabled: sliderEnabled,
