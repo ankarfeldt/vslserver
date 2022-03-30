@@ -3,7 +3,7 @@ const sfCommandId = 'cknsud2tu000aso10mth31dlg';
 
 const fs = require('fs');
 const WebSocket = require('ws');
-const fetch = require('node-fetch');
+const fetch = require('cross-fetch');
 const io = require('socket.io-client');
 
 const osc = require('node-osc');
